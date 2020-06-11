@@ -13,7 +13,7 @@ RUN stack setup
 
 RUN stack build --copy-bins --local-bin-path /usr/local/bin
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 RUN apt-get update && apt-get install -y \
    libpcre3 \
