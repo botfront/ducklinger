@@ -26,6 +26,9 @@ COPY --from=0 /usr/local/bin/duckling-example-exe /usr/local/bin/duckling
 # NOTE: very important, otherwise PCRE fails for whatever reason
 ENV LANG C.UTF-8
 
+RUN mkdir /app
+WORKDIR /app
+
 CMD exec duckling
 
 EXPOSE 8000
