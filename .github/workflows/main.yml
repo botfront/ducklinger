@@ -1,0 +1,37 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '**'
+
+jobs:
+  # debug:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Dump github context
+  #       env:
+  #         GH_CONTEXT: ${{ toJson(github) }}
+  #       run: echo "$GH_CONTEXT"
+
+  push-to-docker-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: build image
+        run: |
+          docker build \
+          -t botfront/duckling:latest \
+          .
+      - name: log in
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: push image
+        run: |
+          if ! [[ "${{ github.ref }}" == "refs/heads/"* ]]; then
+            VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+            docker tag botfront/duckling:latest botfront/duckling:$VERSION
+            docker push botfront/duckling:$VERSION
+          fi
+          docker push botfront/duckling:latest
