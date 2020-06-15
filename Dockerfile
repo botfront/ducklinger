@@ -26,8 +26,11 @@ COPY --from=0 /usr/local/bin/duckling-example-exe /usr/local/bin/duckling
 # NOTE: very important, otherwise PCRE fails for whatever reason
 ENV LANG C.UTF-8
 
+# update permissions & change user to not run as root
 RUN mkdir /app
 WORKDIR /app
+RUN chgrp -R 0 /app && chmod -R g=u /app
+USER 1001
 
 CMD exec duckling
 
